@@ -6,12 +6,18 @@ local f = vim.fn
 
 local rc_file_name = ".nvimrc.lua"
 
+local levels = vim.log.levels
+
 M.config = {
 	allow_dir = f.stdpath("data") .. "/allow",
 }
 
 local function short(path)
 	return f.fnamemodify(path, ":~:.")
+end
+
+local function notify(msg, level)
+	vim.notify(msg, level, { title = "nvim-rc" })
 end
 
 --- Like `vim.fn.findfile` but returns all matches.
@@ -42,10 +48,7 @@ local function allow_file_path(checksum)
 end
 
 local function print_deny_err(path)
-	vim.notify_once(
-		string.format("nvim-rc: %s is blocked. Run `:RcAllow` to allow its content", short(path)),
-		vim.log.levels.ERROR
-	)
+	notify(string.format("%s is blocked. Run `:RcAllow` to allow its content", short(path)), levels.ERROR)
 end
 
 --- Generate a checksum for a file.
@@ -95,7 +98,7 @@ local function allowed_files()
 end
 
 local function source(path)
-	vim.notify_once("nvim-rc: loading " .. short(path), vim.log.levels.INFO)
+	notify("loading " .. short(path), levels.INFO)
 	dofile(path)
 end
 
@@ -120,7 +123,7 @@ function M.allow(args)
 	local choices = find_all_rc_files()
 
 	if #choices == 0 then
-		a.nvim_err_writeln("nvim-rc: no .nvimrc.lua files found")
+		notify("No .nvimrc.lua files found", levels.ERROR)
 		return
 	end
 
@@ -179,7 +182,7 @@ function M.revoke()
 	local choices = allowed_files()
 
 	if #choices == 0 then
-		a.nvim_err_writeln("nvim-rc: no .nvimrc.lua files found")
+		notify("No .nvimrc.lua files found", levels.ERROR)
 		return
 	end
 
@@ -204,41 +207,24 @@ function M.revoke_file(path)
 
 	if f.filereadable(allow_file) == 1 then
 		f.delete(allow_file)
-		vim.notify_once("nvim-rc: " .. short(path) .. " revoked", vim.log.levels.INFO)
-	end
-end
-
---- Reload all .nvimrc.lua files.
-function M.reload()
-	for _, path in ipairs(allowed_files()) do
-		source(path)
+		notify(short(path) .. " revoked", levels.INFO)
 	end
 end
 
 function M.setup()
 	f.mkdir(M.config.allow_dir, "p")
 
+	a.nvim_create_user_command("RcAllow", M.allow, {})
+
+	a.nvim_create_user_command("RcEdit", M.edit, {})
+
+	a.nvim_create_user_command("RcReload", M.load_rc_files, {})
+
+	a.nvim_create_user_command("RcRevoke", M.revoke, {})
+
+	a.nvim_create_user_command("RcLs", M.ls, {})
+
 	local group = a.nvim_create_augroup("nvim-rc", { clear = true })
-
-	a.nvim_create_user_command("RcAllow", M.allow, {
-		nargs = "*",
-	})
-
-	a.nvim_create_user_command("RcEdit", M.edit, {
-		nargs = "*",
-	})
-
-	a.nvim_create_user_command("RcReload", M.reload, {
-		nargs = "*",
-	})
-
-	a.nvim_create_user_command("RcRevoke", M.revoke, {
-		nargs = "*",
-	})
-
-	a.nvim_create_user_command("RcLs", M.ls, {
-		nargs = "*",
-	})
 
 	a.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
 		group = group,
