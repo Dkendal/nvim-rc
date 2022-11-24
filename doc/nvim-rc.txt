@@ -37,3 +37,5 @@ COMMANDS                                                      *nvim-rc-commands*
 
 ================================================================================
 CHANGELOG                                                    *nvim-rc-changelog*
+
+vim:tw=78:ts=8:noet:ft=help:norl:
