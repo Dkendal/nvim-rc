@@ -6,6 +6,8 @@ Loads `.nvimrc.lua` files in the current directory and all parent directories.
 
 If you're familiar with direnv, it works in a very similar manner by only loading trusted files that have been approved by the user.
 
+https://user-images.githubusercontent.com/3162299/203669606-c1f5971e-e322-48c5-bb1c-d28159075cbf.mp4
+
 ## Usage
 
 Create a `.nvimrc.lua` file in your project directory (or any parent directory).
