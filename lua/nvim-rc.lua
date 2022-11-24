@@ -102,6 +102,25 @@ local function source(path)
 	dofile(path)
 end
 
+local function with_interactive_choice(choices, prompt, callback, default)
+	if #choices == 0 then
+		error("Expected at least one choice")
+	end
+
+	if #choices == 1 then
+		callback(choices[1])
+		return
+	end
+
+	vim.ui.select(choices, {
+		prompt = prompt,
+	}, function(selected)
+		if selected then
+			callback(selected)
+		end
+	end)
+end
+
 -- Find all .nvimrc.lua files from the current file to the root. For each
 -- check if the file matches a saved checksum, if the file does then source it,
 -- if it does not then terminate, and prompt the user that they need to
@@ -127,18 +146,7 @@ function M.allow(args)
 		return
 	end
 
-	if #choices == 1 then
-		M.allow_file(choices[1])
-		return
-	end
-
-	vim.ui.select(choices, {
-		prompt = "Select a file to allow",
-	}, function(selected)
-		if selected then
-			M.allow_file(selected)
-		end
-	end)
+	with_interactive_choice(choices, "Select a file to allow", M.allow_file)
 end
 
 --- Allow a file to be sourced. Immediately source the file after approval.
@@ -155,6 +163,7 @@ function M.ls()
 	vim.pretty_print(f.systemlist("ls -C " .. M.config.allow_dir))
 end
 
+--- Edit an rc file, prompts for selection if there are multiple.
 function M.edit()
 	local choices = find_all_rc_files()
 
@@ -163,17 +172,8 @@ function M.edit()
 		return
 	end
 
-	if #choices == 1 then
-		vim.cmd.edit(choices[1])
-		return
-	end
-
-	vim.ui.select(choices, {
-		prompt = "Select a file to edit",
-	}, function(selected)
-		if selected then
-			vim.cmd.edit(selected)
-		end
+	with_interactive_choice(choices, "Select a file to edit", function(selected)
+		vim.cmd.edit(selected)
 	end)
 end
 
@@ -186,18 +186,7 @@ function M.revoke()
 		return
 	end
 
-	if #choices == 1 then
-		M.revoke_file(choices[1])
-		return
-	end
-
-	vim.ui.select(choices, {
-		prompt = "Select a file to revoke",
-	}, function(selected)
-		if selected then
-			M.revoke_file(selected)
-		end
-	end)
+	with_interactive_choice(choices, "Select a file to revoke", M.revoke_file)
 end
 
 --- Deny a file from being sourced.
