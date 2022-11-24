@@ -1,0 +1,39 @@
+*nvim-rc.txt*
+
+Author: Dylan Kendal <https://github.com/Dkendal>
+
+================================================================================
+INTRODUCTION                                                           *nvim-rc*
+
+Direnv-like lua rc file loading for Neovim.
+
+Loads .nvimrc.lua files in the current directory and all parent directories.
+
+If you're familiar with direnv, it works in a very similar manner by only
+loading trusted files that have been approved by the user.
+
+================================================================================
+COMMANDS                                                      *nvim-rc-commands*
+
+                                                   *nvim-rc-:RcAllow* *:RcAllow*
+:RcAllow
+    Allow a .nvimrc.lua file to be sourced, this will save the checksum of the
+    file to a file in the allow directory. If there are multiple files that are
+    not yet approved you will be prompted to select one. Immediately sources
+    the file after approval.
+
+                                                 *nvim-rc-:RcRevoke* *:RcRevoke*
+:RcRevoke
+    Revoke a previous authorization. Prompts for selection if multiple rc files
+    exist.
+
+                                                     *nvim-rc-:RcEdit* *:RcEdit*
+:RcEdit
+    Open a .nvimrc.lua file. Prompts for selection if multiple rc files exist.
+
+                                                 *nvim-rc-:RcReload* *:RcReload*
+:RcReload
+    Reload all allowed .nvimrc.lua files.
+
+================================================================================
+CHANGELOG                                                    *nvim-rc-changelog*

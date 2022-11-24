@@ -1,0 +1,12 @@
+:RcAllow	nvim-rc.txt	/*:RcAllow*
+:RcEdit	nvim-rc.txt	/*:RcEdit*
+:RcReload	nvim-rc.txt	/*:RcReload*
+:RcRevoke	nvim-rc.txt	/*:RcRevoke*
+nvim-rc	nvim-rc.txt	/*nvim-rc*
+nvim-rc-:RcAllow	nvim-rc.txt	/*nvim-rc-:RcAllow*
+nvim-rc-:RcEdit	nvim-rc.txt	/*nvim-rc-:RcEdit*
+nvim-rc-:RcReload	nvim-rc.txt	/*nvim-rc-:RcReload*
+nvim-rc-:RcRevoke	nvim-rc.txt	/*nvim-rc-:RcRevoke*
+nvim-rc-changelog	nvim-rc.txt	/*nvim-rc-changelog*
+nvim-rc-commands	nvim-rc.txt	/*nvim-rc-commands*
+nvim-rc.txt	nvim-rc.txt	/*nvim-rc.txt*
